@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# added by Viva
+build/*
+bin/*
