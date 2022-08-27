@@ -4,12 +4,71 @@
 
 namespace vkargsetter {
 
+/** VkInstanceCreateInfo
+
+\code{.cpp}
+
+typedef struct VkInstanceCreateInfo {
+
+VkStructureType sType;
+
+const void* pNext;
+
+VkInstanceCreateFlags flags;
+
+const VkApplicationInfo* pApplicationInfo;
+
+uint32_t enabledLayerCount;
+
+const char* const* ppEnabledLayerNames;
+
+uint32_t enabledExtensionCount;
+
+const char* const* ppEnabledExtensionNames;
+} VkInstanceCreateInfo;
+\endcode
+
+- sType is the type of this structure.
+- pNext is NULL or a pointer to a structure extending this
+structure.
+- flags is reserved for future use.
+- pApplicationInfo is NULL or a pointer to a
+VkApplicationInfo structure. If
+not NULL, this information helps implementations recognize
+behavior inherent
+to classes of applications. VkApplicationInfo is defined in
+detail below.
+- enabledLayerCount is the number of global layers to
+enable.
+- ppEnabledLayerNames is a pointer to an array of
+enabledLayerCount null-terminated UTF-8 strings
+containing the names of layers to enable for the created
+instance. The layers are loaded in the
+order they are listed in this array, with the first array
+element being the closest to the
+application, and the last array element being the closest to
+the driver. See the Layers section for
+further details.
+- enabledExtensionCount is the number of global extensions
+to enable.
+- ppEnabledExtensionNames is a pointer to an array of
+enabledExtensionCount
+null-terminated UTF-8 strings containing the names of
+extensions to enable.
+
+ */
 constexpr void setVkArg(VkInstanceCreateInfo &info) {
   info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 }
+
 void setVkArg(VkInstanceCreateInfo &info,
               const VkApplicationInfo *appinfo) {
   info.pApplicationInfo = appinfo;
+}
+
+void setVkArg(VkInstanceCreateInfo &info,
+              const void *pnext) {
+  info.pNext = pnext;
 }
 
 void setVkArg(VkInstanceCreateInfo &info,
@@ -44,13 +103,6 @@ struct setVkArray<VkInstanceCreateInfo, N, const char *> {
         static_cast<std::uint32_t>(N);
   }
 };
-
-void setVkArg(VkInstanceCreateInfo &info,
-              const char *const *layerNames,
-              const char *const *extensionNames) {
-  info.ppEnabledLayerNames = layerNames;
-  info.ppEnabledExtensionNames = extensionNames;
-}
 
 template <>
 struct setVkVector<VkInstanceCreateInfo, const char *> {
@@ -96,7 +148,7 @@ void setVkArg(
   std::vector<const char *> layerChars;
   std::vector<const char *> extChars;
   std::function<const char *(std::string)> f =
-      [](std::string s) { return s.c_str(); };
+      [](std::string s) { const char* str = s.c_str(); return str;};
   transform_to_vec(layerNames, layerChars, f);
   transform_to_vec(extensionNames, extChars, f);
 

@@ -3,6 +3,7 @@
 #include <vkargsetter.hpp>
 
 namespace vkargsetter {
+
 void setVkArg(VkExtent2D &extent, std::uint32_t width,
               std::uint32_t height) {
   extent.width = width;
@@ -14,4 +15,5 @@ void setVkArg(VkExtent3D &extent, std::uint32_t width,
   extent.height = height;
   extent.depth = depth;
 }
+
 };
